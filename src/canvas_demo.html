@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <canvas height="500" width="500" id="context"></canvas>
+</head>
+<body>
+<script>
+    var cxt = document.getElementById('context');
+    var paint = cxt.getContext("2d");
+    var width = paint.canvas.width;
+    var height = paint.canvas.height;
+    //console.log(height, width);
+    var r = width/2;
+    var j = -r;
+    /*使圆心在中间*/
+    paint.translate(r, r);
+    paint.clearRect(0,0,width,height);
+    paint.beginPath();
+    /*画圆*/
+    paint.arc(0,0,r,0,Math.PI*2,false);
+    paint.stroke();
+    lineFill();
+    var timer = setInterval(lineFill,30);
+    /*直线填充*/
+  function lineFill(){
+      j++;
+      //console.log(j);
+      if( j === r){
+          j = -r;
+          clearInterval(timer);
+      }
+      var starEngle = Math.asin(Math.abs(j) / r);
+      console.log(starEngle);
+      paint.clearRect(0,0,500,500);
+      paint.beginPath();
+      if(j>0){
+          var endEngle = Math.PI + starEngle;
+          paint.arc(0,0,r,-starEngle,endEngle,false);
+          //console.log(starEngle,endEngle);
+      }else{
+          var endEngle = Math.PI - starEngle;
+          paint.arc(0,0,r,starEngle,endEngle,false);
+          //console.log(starEngle,endEngle);
+      }
+      //paint.stroke();
+      /*填充颜色*/
+      paint.fillStyle = '#0000ff';
+      paint.fill();
+  }
+</script>
+</body>
+</html>

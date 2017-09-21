@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <canvas width="1000" height="1000" id="canvas1"></canvas>
+</body>
+<script>
+    var paint, r;
+    var width, height;
+    var  j = 0, c = 0,length=0;
+    /*程序入口*/
+    function main() {
+        var canvas1 = document.getElementById("canvas1");
+        paint = canvas1.getContext("2d");
+        width = paint.canvas.width;
+        height = paint.canvas.height;
+        r = width / 2;
+        j = -r;
+        start();
+        setInterval(start, 50);
+    }
+
+    /*开始进行清除和绘制*/
+    function start() {
+        paint.clearRect(0, 0, width, height);
+
+        drawArc();
+
+        mathR();
+        paint.restore();
+    }
+
+    /*绘制一个外层的圆*/
+    function drawArc() {
+        paint.save();
+        paint.translate(r, r);
+        paint.beginPath();
+        paint.arc(0, 0, r, 0, 2 * Math.PI, false);
+        paint.stroke();
+    }
+
+    /*计算圆和内部水波的偏移量,并赋给drawSin()长度*/
+    function mathR() {
+        /*控制上下移动*/
+        j++;
+        c++;
+        if (j == r) {
+            j = -r;
+            c = 0;
+        }
+
+        /*变化正弦曲线的左右长度*/
+        length = Math.sqrt(r * r - j * j);
+        drawSin(j);
+
+        /*绘制加载百分比*/
+        paint.beginPath();
+        paint.fillStyle = "#ff0000";
+        paint.font = 40 + "px Arial";
+        paint.textAlign = 'center';
+        paint.fillText(c * 100 / (2 * r) + "%", 0, 0);
+
+        /*计算角度值，绘制加载中颜色*/
+        var rad = Math.asin(Math.abs(j) / r);
+        paint.beginPath();
+        paint.fillStyle = "#66ccff";
+        paint.globalAlpha = 0.3;
+        if (j > 0) {
+            paint.arc(0, 0, r, -rad, Math.PI + rad, false);
+        } else {
+            paint.arc(0, 0, r, rad, Math.PI - rad, false);
+        }
+        paint.fill();
+    }
+
+
+    /*绘制贝塞尔曲线，并且长度和位置可变*/
+    function drawSin(h) {
+        paint.fillStyle = "#66ccff";
+        paint.globalAlpha =1;
+        paint.beginPath();
+        paint.moveTo(-length,-h);
+        //paint.bezierCurveTo(70,30,130,170,180,50);
+        paint.bezierCurveTo(-length,-(h+Math.sin(h)*100),length,-(h+Math.sin(h)*50),length,-h);
+        paint.fill();
+    }
+    main();
+</script>
+</html>

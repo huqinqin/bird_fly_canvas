@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <canvas id="mycanvas" height="1000" width="1000"></canvas>
+</body>
+<script>
+    //save和restore方法
+    //restore只能回复到save之后，如果在save前已经调用过其他操作画布的方法，是不能通过restore还原的
+    //调用了restore方法将画布恢复,但是刚才时针已经被绘制在屏幕上，此时不会再受到画布的影响
+    var c = document.getElementById("mycanvas");
+    //console.log(c);
+    var ctx = c.getContext("2d");
+    //console.log(ctx);
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+    var width=ctx.canvas.width;  //获取当前canvas的宽高
+    var height=ctx.canvas.height;
+    console.log(width, height);
+    function rads(x) {
+        return Math.PI*x/180;
+    }
+    //console.log(rads(360));
+    /*先画一个圆圈圈*/
+    function arcPlot(c,x,y,r) {
+          c.save();
+          c.translate(x,y);
+          c.beginPath();
+          c.arc(0,0,r,0,rads(360));
+          c.lineWidth = '5px';
+          c.strokeStyle = 'red';
+          c.stroke();
+    }
+    /*画时钟*/
+    function hour(h,m) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.rotate(2*Math.PI/12*(h-3)+2*Math.PI/12/60*m);
+        ctx.lineTo(40,0);
+        ctx.strokeStyle = "blue";
+        ctx.stroke();
+        ctx.restore();
+    }
+    /*画分钟*/
+    function minute(m) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.rotate(2*Math.PI/60*(m-15));
+        ctx.lineTo(60,0);
+        ctx.strokeStyle = "green";
+        ctx.stroke();
+        ctx.restore();
+    }
+    /*画秒钟*/
+    function second(s) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.rotate(2*Math.PI/60*(s-15));
+        //console.log(2*Math.PI/60*(s-15));
+        ctx.lineTo(80,0);
+        ctx.strokeStyle = "orange";
+        ctx.stroke();
+        ctx.restore();
+
+        //console.log(seconds);
+    }
+    /*开始画刻度*/
+     function plotLine() {
+         for (var i = 0; i < 60; i++) {
+             ctx.beginPath();
+             if (i % 5 == 0) {
+                 ctx.moveTo(80, 0);
+                 ctx.lineTo(100, 0);
+                 ctx.lineWidth = "4px";
+             }else{
+                 ctx.moveTo(90, 0);
+                 ctx.lineTo(100, 0);
+                 ctx.lineWidth = "3px";
+             }
+             ctx.rotate(rads(6));
+             ctx.strokeStyle = "black";
+             ctx.stroke();
+         }
+     }
+   /*如何使时钟动起来*/
+   function draw() {
+       //debugger;
+       ctx.clearRect(-500,-500,2000,2000); //每秒清除一次矩形
+       ctx.save();
+       //console.log(window.innerWidth, window.innerHeight);
+       var date=new Date();
+       var h=date.getHours();
+       var m=date.getMinutes();
+       var s=date.getSeconds();
+       arcPlot(ctx,500,500,100);
+       plotLine();
+       hour(h,m);
+       minute(m);
+       second(s);
+       ctx.restore();
+   }
+    //定时器
+    setInterval(draw, 1000);
+    draw(); //先执行一次，不然页面会卡一下。
+    //draw(); //先执行一次，不然页面会卡一下。
+    //draw();
+</script>
+</html>

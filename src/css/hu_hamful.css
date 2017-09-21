@@ -1,0 +1,85 @@
+/*初始化*/
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td { margin:0; padding:0; }
+
+body, button, input, select, textarea { font:12px/1.5tahoma, arial, \5b8b\4f53; }
+
+h1, h2, h3, h4, h5, h6{ font-size:100%; }
+
+address, cite, dfn, em, var { font-style:normal; }
+
+code, kbd, pre, samp { font-family:couriernew, courier, monospace; }
+
+small{ font-size:12px; }
+
+ul, ol { list-style:none; }
+
+a { text-decoration:none; }
+
+a:hover { text-decoration:underline; }
+
+sup { vertical-align:text-top; }
+
+sub{ vertical-align:text-bottom; }
+
+legend { color:#000; }
+
+fieldset, img { border:0; }
+
+button, input, select, textarea { font-size:100%; }
+
+table { border-collapse:collapse; border-spacing:0; }
+
+/*有益有害菌的界面*/
+.space{
+    height:80px
+}
+.bodyContainer{
+    width: 80%;
+    margin: 0 auto;
+    background-color: rgb(255,255,255);
+    border-radius: 5px;
+    box-shadow: 3px 3px 15px 1px rgba(7,17,27,0.2);
+}
+.a_head{
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(7,17,27,0.2);
+}
+.collapse_a{
+   text-align: center;
+    color: black;
+    font-weight: bold;
+}
+.isSatisfy{
+    flex: 1;
+    text-align: center;
+    color: black;
+    font-weight: bold;
+}
+.hideContent{
+    display: inline-block;
+    width: 100%;
+    color: rgba(7,17,27,0.2);
+    text-align: center;
+}
+.w_process{
+    flex:1
+}
+.j_process{
+    background-color: #f79c01;
+    border-radius: 5px;
+}
+.w_process_bar{
+    height: 6px;
+    border-radius: 5px;
+}
+.acc_inner{
+    padding: 5px 0;
+    margin:0 5px;
+    border-bottom: 1px dotted rgba(7,17,27,0.2);
+}
+
+/*3D*/
+.highcharts-button{
+    display: none;
+}

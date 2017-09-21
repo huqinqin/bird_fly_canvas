@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../src33/css/hu_micro_ecological.css">
+</head>
+<body>
+   <canvas id="context" height="1000" width="1000"></canvas>
+
+</body>
+<script>
+    var ctx = document.getElementById('context');
+    var c = ctx.getContext('2d');
+    function rads(x) {
+        return Math.PI*x/180;
+    }
+    c.beginPath();
+    c.arc(75,100,50,0,rads(360),false);
+    c.moveTo(200,100);
+    c.arc(200,100,50,rads(-60),rads(0),false);
+    c.strokeStyle = "blue";
+    c.stroke();
+    c.closePath();
+
+    c.moveTo(450,50);
+    c.arcTo(500,50,500,150,30);
+    c.arcTo(500,150,400,150,20);
+    c.arcTo(450,150,450,50,10);
+    c.arcTo(450,50,500,50,0);
+    c.closePath();
+    c.strokeStyle='black';
+    c.stroke();
+
+    /*二次贝塞尔曲线*/
+    c.moveTo(75,250);
+    c.quadraticCurveTo(100,200,175,250);
+    c.fillRect(100-3,200-3,6,6);
+
+    /*三次贝塞尔曲线*/
+    c.moveTo(200,250);
+    c.bezierCurveTo(220,220,280,280,300,250);
+    c.fillRect(220,220,10,10);
+    c.fillRect(280,280,6,6);
+    /*定义一些图形属性并绘制曲线*/
+    c.fillStyle = "#aaa";
+    c.strokeStyle = 'black';
+    c.strokeRect(300,300,20,20);
+    c.lineWidth = 5;
+    c.fill();
+    c.stroke();
+
+
+
+    /*图片进行填充*/
+    var offscreen = document.createElement('canvas');
+    offscreen.width = offscreen.height = 10;
+    offscreen.getContext('2d').strokeStyle = "yellow";
+    offscreen.getContext('2d').strokeRect(0,0,6,6);
+    var pattern = c.createPattern(offscreen,'repeat');
+
+
+    /*渐变*/
+    var bgfade = c.createLinearGradient(0,0,1000,1000);
+    bgfade.addColorStop(0.0,"#88f");
+    bgfade.addColorStop(1.0,"#fff");
+
+    /*两个同心圆之间的渐变*/
+    var peekhold = c.createRadialGradient(300,300,100,300,300,300);
+    peekhold.addColorStop(0.0,"transparent");
+    peekhold.addColorStop(0.7,"rgba(100,100,100,0.9)");
+    peekhold.addColorStop(1.0,"rgba(0,0,0,0)");
+
+
+
+    c.fillStyle = bgfade;
+    c.fillRect(0,0,1000,1000);
+    c.strokeStyle = pattern;
+    //c.fillStyle = pattern;
+    c.lineWidth = 100;
+    c.strokeRect(100,100,400,400);
+    c.fillStyle = peekhold;
+    c.fillRect(0,0,1000,1000);
+
+    c.lineCap = 'butt';
+</script>
+</html>

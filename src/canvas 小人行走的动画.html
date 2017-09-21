@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小人打cs动画</title>
+</head>
+<body>
+   <canvas id="cvs" height="600" width="600"></canvas>
+</body>
+<script src="js/loadImage.js"></script>
+<script>
+    var cvs = document.getElementById("cvs");
+    var ctx = cvs.getContext("2d");
+    var objImg = {
+        NPC2: "./images/NPC2.png",
+        NPC3: "./images/NPC3.png"
+    }
+    loadImage(objImg,function (imgObj) {
+        /*设置画布大小*/
+        cvs.width = imgObj.NPC2.width;
+        cvs.height = imgObj.NPC2.height;
+        //console.log(cvs.width,cvs.height);
+
+        /*调用小人*/
+        var person = new Person(ctx,imgObj.NPC2,4,4,20,20,100,100);
+        setInterval(function () {
+            person._bind();
+            person.draw();
+
+            person.update();
+        },400);
+
+
+
+
+    })
+    function Person(ctx, img, widthFrame, heightFrame, x, y, renderWidth, renderHeight) {
+        this.ctx = ctx;
+        this.img = img;
+        /*图片水平方向有几个重复的小人*/
+        this.widthFrame = widthFrame;
+        /*图片竖直方向有几个重复的小人 */
+        this.heightFrame = heightFrame;
+        /*求出一个小人的宽和高*/
+        this.width = this.img.width/this.widthFrame;
+        this.height = this.img.height/this.heightFrame;
+
+        /*图像绘制时的坐标和大小*/
+        this.x = x;
+        this.y = y;
+        this.renderWidth = renderWidth;
+        this.renderHeight = renderHeight;
+        this.currentFrame = 0;
+    }
+    
+   /* function extend(o1,o2) {
+        for(var key in o2){
+            if(o2.hasOwnProperty(key)){
+                o1[key] = o2[key];
+            }
+        }
+    }*/
+    Person.prototype = {
+        constructor: Person,
+        draw: function () {
+            this.ctx.clearRect(0,0,this.img.width,this.img.height);
+            this.ctx.drawImage(this.img, this.currentFrame * this.width, this.derection * this.height||0,
+                this.width, this.height, this.x , this.y, this.renderWidth, this.renderHeight)
+            console.log(this.derection);
+        },
+        _bind: function () {
+            //debugger;
+            var self = this;
+            document.addEventListener("keydown",function (e) {
+                switch (e.keyCode){
+                    case 37:
+                        self.derection = 1;
+                        break;
+                    case 38:
+                        self.derection = 3;
+                        break;
+                    case 39:
+                        self.derection = 2;
+                        break;
+                    case 40:
+                        self.derection = 0;
+                        break;
+                }
+                //console.log(self.derection);
+            })
+            //window.confirm();
+        },
+        update: function () {
+            this.currentFrame = ++this.currentFrame>=this.widthFrame?0: this.currentFrame;
+            switch (this.derection){
+                /*0表示向下走,y轴相加*/
+                case 0:
+                    this.y += 2;
+                    break;
+                /*1表示向左走,x轴相减*/
+                case 1:
+                    this.x -= 2;
+                    break;
+                /*2表示向右走,x轴相加*/
+                case 2:
+                    this.x += 2;
+                    break;
+                /*3表示向上走,y轴相减*/
+                case 3:
+                    this.y -= 2;
+                    break;
+            }
+        }
+    }
+
+</script>
+<script>
+
+</script>
+</html>

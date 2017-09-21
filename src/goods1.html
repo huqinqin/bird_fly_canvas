@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>页面加载完成前的loading效果</title>
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <style>
+        #loading_all
+        {        width:100%;
+            height:100%;
+            position:fixed;
+            z-index:1999;
+            background-color:white;
+        }
+
+        #loading_all div
+        {
+            position:absolute;
+            width:60px;
+            height:60px;
+            top:50%;
+            margin-top:-60px;
+            left:50%;
+            margin-left:-30px;
+        }
+    </style>
+</head>
+<body ontouchstart>
+<div id="loading_all">
+    <div>
+        <img style="width: 200px;height: 180px;" src="http://img.hb.aicdn.com/89b6ed7dad18385e5b992e2bf639844b314ea6ed7bc38-SWRSd5_fw658" class="img-responsive">
+    </div>
+</div>
+<main>
+    <div class="weui-grids">
+        <a href="" class="weui-grid js_grid">
+            <div class="weui-grid__icon">
+                <img src="images/icon_nav_button.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                Button
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid">
+            <div class="weui-grid__icon">
+                <img src="images/icon_nav_cell.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                List
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid">
+            <div class="weui-grid__icon">
+                <img src="images/icon_nav_button.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                Button
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid">
+            <div class="weui-grid__icon">
+                <img src="images/icon_nav_cell.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                List
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid">
+            <div class="weui-grid__icon">
+                <img src="images/icon_nav_button.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                Button
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid">
+            <div class="weui-grid__icon">
+                <img src="images/icon_nav_cell.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                List
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid">
+            <div class="weui-grid__icon">
+                <img src="images/icon_nav_button.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                Button
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid">
+            <div class="weui-grid__icon">
+                <img src="images/icon_nav_cell.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                List
+            </p>
+        </a>
+        <a href="" class="weui-grid js_grid">
+            <div class="weui-grid__icon">
+                <img src="images/icon_nav_button.png" alt="">
+            </div>
+            <p class="weui-grid__label">
+                Button
+            </p>
+        </a>
+    </div>
+    <!--点击按钮-->
+    <a href="#cd-nav" class="cd-nav-trigger">
+        Menu
+        <span class="cd-nav-icon"></span>
+    </a>
+
+    <header style="height: 600px;"></header>
+    <div id="bodyContainer">
+
+    </div>
+</main>
+
+<script>
+    document.addEventListener("touchmove", myFunction);
+    function myFunction(e) {
+        e.preventDefault();
+    }
+    //解除触摸锁定
+    document.removeEventListener("touchmove", myFunction);
+    $(window).load(function(){
+        //适当延迟隐藏，提高loading效果
+        //$('#loading_all').delay(1000).hide(0);
+        $('#loading_all').hide(0);
+    });
+</script>
+</body>
+</html>

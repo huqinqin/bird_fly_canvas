@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <canvas id="context" width="500px" height="500"></canvas>
+</body>
+<script>
+    var cxt = document.getElementById('context');
+    var paint = cxt.getContext("2d");
+  /*  var width = paint.canvas.width;
+    var height = paint.canvas.height;
+    var r = width/2;*/
+   /* paint.translate(r, r);
+    paint.beginPath();
+    paint.moveTo(0,250);
+    paint.lineTo(-250,-250);
+    paint.lineTo(0,0);
+    paint.lineTo(250,-250);
+    paint.closePath();
+    paint.stroke();
+    paint.lineCap ='round';
+    paint.fillStyle = 'blue';
+    paint.fill();*/
+    paint.font="42px Arial";
+    paint.textBaseline="top";
+    paint.fillStyle = "red";
+    paint.fillText('huqin',100,100);
+    paint.fill();
+
+</script>
+</html>

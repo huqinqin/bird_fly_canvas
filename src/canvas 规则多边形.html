@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <canvas id="mycanvas" width="1000" height="1000"></canvas>
+</head>
+<body>
+</body>
+<script>
+    var c = document.getElementById('mycanvas');
+    var ctx = c.getContext("2d");
+    /*直接画三角形*/
+    var deg = Math.PI*2/360;
+
+    /*function trans(c,x,y,r) {
+        c.translate(x,y);
+        c.moveTo(0,0);
+        c.lineTo(r,0);
+        c.rotate(-60*deg);
+        c.lineTo(r,0);
+        //c.closePath();
+        c.strokeStyle = "blue";
+        c.stroke();
+
+        //c.fillStyle = "#333";
+        //c.fill();
+    }*/
+  //trans(ctx,300,300,150);
+    function polygon(c,n,x,y,r,angle) {
+        //debugger;
+       angle = angle || 0;
+        //counterclockwise = counterclockwise ||false;
+        c.translate(x,y);
+        c.moveTo(0,0);
+        var delta = 2*Math.PI/n;
+        for(var i=0;i<n-1;i++){
+            c.lineTo(r,0);
+            c.translate(r,0);
+            angle = -delta;
+            c.rotate(angle);
+        }
+        c.closePath();
+        c.fillStyle='#333';
+        c.stroke();
+        c.fill();
+    }
+    //ctx.beginPath();
+    polygon(ctx,4,500,500,100);
+</script>
+</html>

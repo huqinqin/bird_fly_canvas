@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+   <canvas id="cvs" height="500" width="500"></canvas>
+</body>
+<script src="js/loadImage.js"></script>
+<script>
+    var cvs = document.getElementById("cvs");
+    var ctx = cvs.getContext("2d");
+    /*创建一个天空的构造函数*/
+    function Sky( ctx, img, speed) {
+        //debugger;
+        this.ctx = ctx;
+        this.img = img;
+        this.speed = speed || 2;
+        /*创建一个实例,length就自增*/
+        Sky.len++;
+        this.width = this.img.width;
+        //console.log(this.width);
+        this.height = this.img.height;
+        /*根据背景数量,动态计算起始的x轴坐标*/
+        this.x = this.width * ( Sky.len - 1 );
+        //console.log(this.x);
+        //this.x = 0;
+        this.y = 0;
+    }
+
+    /*创建一个鸟类的构造函数*/
+    function Bird(ctx, img, widthFrame, heightFrame,x,y) {
+          this.ctx = ctx;
+          this.img = img;
+          this.widthFrame = widthFrame;
+          this.heightFrame = heightFrame;
+          this.width = this.img.width/this.widthFrame;
+          this.height = this.img.height/this.heightFrame;
+          //console.log(this.width,this.height);
+          this.x = x;
+          this.y = y;
+          this.currentFrame = 0;
+
+          /*小鸟下落速度*/
+          this.speed = 5;
+          this.speedPlus = 2;
+    }
+
+
+    /*创建一个大地的构造函数*/
+    function Land(ctx,img,speed) {
+        Land.len++;
+        this.ctx = ctx;
+        this.img = img;
+        this.speed = speed;
+        this.width = this.img.width;
+        this.height = this.img.height;
+        this.x = (Land.len-1) * this.width;
+        this.y = cvs.height - this.height;
+        console.log(this.x);
+    }
+
+
+    /**/
+    Pipe.len = 0;
+    /*创建一个管道的构造函数*/
+    function  Pipe(ctx,imgUp,imgDown,landHeight,space,speed) {
+        Pipe.len++;
+        this.ctx = ctx;
+        this.imgUp = imgUp;
+        this.imgDown = imgDown;
+        this.space = space;
+        this.speed = speed;
+        this.heightD = this.imgDown.height;
+        this.widthD = this.imgDown.width;
+        this.heightU = this.imgUp.height;
+        this.widthU = this.imgUp.width;
+
+        this.landHeight = landHeight;
+        this.x = this.widthD*3*(Pipe.len - 1) + 150;
+        this.y = 0;
+        /*需要随机生成管道的高度*/
+        this._init();
+    }
+
+
+    /*给鸟原型添加方法*/
+    Bird.prototype = {
+        constructor: Bird,
+        /*绘制鸟*/
+        draw: function () {
+            /*来一个旋转的基数*/
+            var baseRotation = Math.PI/180*10;
+            /*速度越大旋转的角度就越大*/
+            var rotateRation = baseRotation * this.speed;
+            var maxRotation = Math.PI/180*45;
+            rotateRation = rotateRation >= maxRotation? maxRotation: rotateRation;
+
+            /*保存状态*/
+            this.ctx.save();
+            this.ctx.translate(this.x+this.width/2,this.y+this.height/2);
+            this.ctx.rotate(rotateRation);
+            this.ctx.drawImage(this.img, this.currentFrame * this.width, 0, this.width, this.height,
+                -this.width/2, -this.height/2, this.width, this.height);
+            /*回滚到保存的状态*/
+            this.ctx.restore();
+        },
+        update: function () {
+            this.currentFrame = ++this.currentFrame >= this.widthFrame? 0 : this.currentFrame;
+            this.y += this.speed;
+            this.speed += this.speedPlus;
+        },
+
+        /*绑定事件*/
+        _bind: function () {
+            var self = this;
+            this.ctx.canvas.addEventListener("click",function () {
+                self.speed = -8 ;
+            })
+        }
+
+    };
+
+
+    /*给天空添加方法*/
+    /*sky实例默认的数量*/
+    Sky.len = 0;
+    /*给原型扩充方法*/
+    Sky.prototype = {
+        constructor: Sky,
+        draw: function () {
+            this.ctx.drawImage(this.img, this.x, this.y);
+        },
+        update: function () {
+            this.x -= this.speed;
+            if( Math.abs(this.x) >= this.width){
+                this.x += this.width *2;
+            }
+        }
+    };
+
+
+    /*land实例默认的数量*/
+    Land.len = 0;
+    /*给大地添加方法*/
+    Land.prototype = {
+        constructor: Land,
+        draw: function () {
+           this.ctx.drawImage(this.img,0,0,this.width,this.height,this.x,this.y,this.width,this.height);
+        },
+        update: function () {
+            this.x -= this.speed;
+            /*这里出了问题,明天来进行改造,这个地方还不是很明白*/
+            this.x += this.x <= -this.img.width? this.img.width * Land.len: 0;
+        }
+    }
+
+    /*给管道添加原型方法*/
+    Pipe.prototype = {
+        constructor: Pipe,
+        _init: function () {
+            this.maxHeight = this.ctx.canvas.height - this.landHeight - this.space-50;
+            /*随机生成50到randomHeight的高度*/
+            this.randomHeight = Math.random()*this.maxHeight;
+            this.randomHeight = this.randomHeight<50? 50: this.randomHeight;
+
+            /*上管道y的坐标 =  管道的长度 - 随机生成的管道*/
+            this.downY = this.heightD - this.randomHeight;
+
+            /*下管道y的坐标 = 管道的长度 + 空隙的高度,也就是截取的图片在画布中的y轴坐标*/
+            this.upY = this.randomHeight + this.space;
+
+            /*upHeight表示截取管道的长度*/
+            this.upHeight = this.ctx.canvas.height - this.randomHeight - this.space - this.landHeight;
+
+        },
+        draw: function () {
+            this.ctx.drawImage(this.imgDown,0,this.downY,this.widthD,
+                this.randomHeight,this.x,0,this.widthD,this.randomHeight);
+            this.ctx.drawImage(this.imgUp,0,0,this.widthU,
+                this.upHeight,this.x,this.upY,this.widthU,this.upHeight);
+            this._draw();
+
+        },
+        update: function () {
+             this.x -= this.speed;
+             if(this.x <= -this.widthU){
+                 this._init();
+                 /*当柱子走出去之后,重新在画布中加载的地方*/
+                 this.x += this.widthD*3*Pipe.len;
+             }
+        },
+        /*绘制管道矩形,利用isPointInPath判断小鸟是否撞在了柱子上*/
+        _draw: function () {
+            this.ctx.rect(this.x,0,this.widthD,this.randomHeight);
+            this.ctx.rect(this.x,this.upY,this.widthU,this.upHeight);
+            this.ctx.stroke();
+        }
+
+    }
+</script>
+<script>
+    loadImage({
+        bird: './images/bird.png',
+        land: './images/land.png',
+        pipeDown: './images/pipeDown.png',
+        pipeUp: './images/pipeUp.png',
+        sky: './images/sky.png'
+    },function ( imgObj) {
+
+        /*根据背景的大小设置画布的大小*/
+        cvs.width = imgObj.sky.width;
+        cvs.height = imgObj.sky.height;
+       /*创建两个天空的实例,两个实例是为了保证循环的连续性*/
+         var sky = new Sky(ctx, imgObj.sky,10);
+         var sky2 = new Sky(ctx, imgObj.sky,10);
+
+       /*创建鸟的实例*/
+       var bird = new Bird(ctx, imgObj.bird, 3, 1, 10,10);
+
+       /*创建大地的实例*/
+        var land = new Land(ctx, imgObj.land,10);
+        var land1 = new Land(ctx, imgObj.land,10);
+        var land2 = new Land(ctx, imgObj.land,10);
+        var land3 = new Land(ctx, imgObj.land,10);
+
+        /*创建管道实例*/
+        var pipe = new Pipe(ctx,imgObj.pipeUp,imgObj.pipeDown,imgObj.land.height,150,10);
+        var pipe1 = new Pipe(ctx,imgObj.pipeUp,imgObj.pipeDown,imgObj.land.height,150,10);
+        var pipe2 = new Pipe(ctx,imgObj.pipeUp,imgObj.pipeDown,imgObj.land.height,150,10);
+        var pipe3 = new Pipe(ctx,imgObj.pipeUp,imgObj.pipeDown,imgObj.land.height,150,10);
+        var pipe4 = new Pipe(ctx,imgObj.pipeUp,imgObj.pipeDown,imgObj.land.height,150,10);
+        var pipe5 = new Pipe(ctx,imgObj.pipeUp,imgObj.pipeDown,imgObj.land.height,150,10);
+
+         var timer = setInterval(function () {
+             /*计算小鸟的中心点,每次绘制新的游戏画面的时候,先判断小鸟有没有碰撞*/
+             /*如果碰撞暂停定时器*/
+             var birdCoredX = bird.x + bird.width/2;
+             var birdCoredY = bird.y + bird.height/2;
+             if( ctx.isPointInPath(birdCoredX,birdCoredY) ||
+                 birdCoredY < 0 ||
+                 birdCoredY > (ctx.canvas.height - Land.height)){
+                clearInterval(timer);
+                ctx.fillStyle = "#ccc";
+                ctx.rect(0,0,ctx.canvas.width,ctx.canvas.height);
+                ctx.globalAlpha = 0.4;
+                ctx.fill();
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "red";
+                ctx.font = "900 40px 微软雅黑";
+                ctx.fillText("GAME OVER!!!",ctx.canvas.width/2,ctx.canvas.height/2);
+                return;
+             }
+
+
+             sky.draw();
+             sky.update();
+
+             sky2.draw();
+             sky2.update();
+
+             bird.draw();
+             bird.update();
+             bird._bind();
+
+             ctx.beginPath();
+
+             pipe.draw();
+             pipe.update();
+             pipe1.draw();
+             pipe1.update();
+             pipe2.draw();
+             pipe2.update();
+             pipe3.draw();
+             pipe3.update();
+             pipe4.draw();
+             pipe4.update();
+             pipe5.draw();
+             pipe5.update();
+
+            /*需要创建4个连续的大地*/
+             land.draw();
+             land.update();
+             land1.draw();
+             land1.update();
+             land2.draw();
+             land2.update();
+             land3.draw();
+             land3.update();
+
+             /*调用管道*/
+
+         },200);
+
+    })
+</script>
+</html>

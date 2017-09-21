@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+   <canvas id="mycanvas"></canvas>
+</body>
+<script>
+    var c = document.getElementById("mycanvas");
+    var ctx = c.getContext("2d");
+    c.width =  window.innerWidth;
+    c.height = window.innerHeight;
+    var points = [];
+    //console.log(ctx.width,ctx.height);
+    function bgc() {
+        var bg = ctx.createLinearGradient(0,0,window.innerWidth,window.innerHeight);
+        bg.addColorStop(0,"#000");
+        bg.addColorStop(1,"#fff");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0,0,window.innerWidth,window.innerHeight);
+        //ctx.fill();
+    }
+
+    /*创造点点*/
+    var point = [];
+    for(var i=0;i<500;i++){
+        point.push({
+            x: Math.random()*window.innerWidth,
+            y: Math.random()*window.innerHeight,
+            vx: Math.random()-0.5,
+            vy: Math.random()+0.5,
+            size: 3+Math.random()
+        })
+    }
+    //console.log(point);
+    /*开始画点*/
+    function rads(x) {
+        return Math.PI*2/360*x;
+    }
+    function drawPoint(c) {
+        c.clearRect(0,0,window.innerWidth,window.innerHeight);
+        bgc();
+        var temp;
+        for(var i=0;i<500;i++){
+            temp = point[i];
+            temp.x += point[i].vx;
+            temp.y += point[i].vy;
+            temp.size = 2+Math.random();
+            if(temp.x<0) temp.x = window.innerWidth;
+            if(temp.x>window.innerWidth) temp.x = 0;
+            if(temp.y>window.innerHeight) temp.y = 0;
+            c.beginPath();
+            //c.fillStyle = "yellow";
+            c.arc(temp.x,temp.y,temp.size,0,rads(360));
+            points.push({indexX:temp.x,indexY:temp.y});
+            c.strokeStyle = "white";
+            c.stroke();
+            R = Math.floor(Math.random()*255);
+            G = Math.floor(Math.random()*255);
+            B = Math.floor(Math.random()*255);
+            c.fillStyle = "rgb("+R+","+G+","+B+")";
+            c.fill();
+        }
+    }
+
+
+   // console.log(points);
+    /*for(var i=0;i<500;i++){
+        for(var j=0;j<500;j++){
+            var dis = Math.sqrt(Math.pow(points[i].indexX-points[j].indexX,2)+Math.pow(points[i].indexY-points[j].indexY,2));
+           if(dis<50){
+               ctx.beginPath();
+               ctx.moveTo(points[i].indexX,points[i].indexY);
+               ctx.lineTo(points[j].indexX,points[j].indexY);
+               ctx.stroke();
+           }
+        }
+    }*/
+
+    drawPoint(ctx);
+        document.onmousemove = function (event) {
+            e= event  || window.event;
+            //console.log(e.pageX,e.pageY);
+            drawPoint(ctx);
+            for(var i=0;i<500;i++){
+                var diss = Math.sqrt(Math.pow(e.pageX-points[i].indexX,2)+Math.pow(e.pageY-points[i].indexY,2));
+                if(diss<100) {
+                    for (var j = 0; j < 500; j++) {
+                        var dis = Math.sqrt(Math.pow(points[i].indexX - points[j].indexX, 2) + Math.pow(points[i].indexY - points[j].indexY, 2));
+                        if (dis < 80) {
+                            ctx.beginPath();
+                            ctx.moveTo(points[i].indexX, points[i].indexY);
+                            ctx.lineTo(points[j].indexX, points[j].indexY);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+</script>
+</html>
